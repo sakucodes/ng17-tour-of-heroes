@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { MessagesComponent } from './features/messages/ui/messages.component';
 
 @Component({
-  selector: 'app-root',
+  selector: 'toh-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RouterLink, MessagesComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'tour-of-heroes';
+  title = 'Tour of Heroes';
 }
