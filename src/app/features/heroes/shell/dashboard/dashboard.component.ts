@@ -4,11 +4,12 @@ import { HeroService } from '../../data/hero.service';
 import { Observable, map } from 'rxjs';
 import { Hero } from '../../models/hero';
 import { RouterLink } from '@angular/router';
+import { HeroSearchComponent } from './ui/hero-search/hero-search.component';
 
 @Component({
   selector: 'toh-dashboard',
   standalone: true,
-  imports: [NgFor, AsyncPipe, RouterLink],
+  imports: [NgFor, AsyncPipe, RouterLink, HeroSearchComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })

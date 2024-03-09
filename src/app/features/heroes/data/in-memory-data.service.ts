@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InMemoryDbService, RequestInfo } from 'angular-in-memory-web-api';
+import { InMemoryDbService } from 'angular-in-memory-web-api';
 import { Observable } from 'rxjs';
 import { HEROES } from './mock-heroes';
 import { Hero } from '../models/hero';
@@ -9,8 +9,8 @@ import { Hero } from '../models/hero';
 })
 export class InMemoryDataService implements InMemoryDbService {
 
-  createDb(reqInfo?: RequestInfo | undefined): {} | Observable<{}> | Promise<{}> {
-    return { HEROES };
+  createDb(): {} | Observable<{}> | Promise<{}> {
+    return { heroes: HEROES };
   }
 
   // Overrides the genId method to ensure that a hero always has an id.

@@ -4,7 +4,6 @@ import { AsyncPipe, Location, NgIf, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeroService } from '../../data/hero.service';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'toh-hero-detail',
@@ -14,8 +13,8 @@ import { Observable } from 'rxjs';
   styleUrl: './hero-detail.component.scss'
 })
 export class HeroDetailComponent {
-  
-  hero$?: Observable<Hero>;
+
+  hero?: Hero;
 
   #heroService: HeroService = inject(HeroService);
 
@@ -29,7 +28,16 @@ export class HeroDetailComponent {
   loadHero(): void {
     const id = Number(this.#route.snapshot.paramMap.get('id'));
 
-    this.hero$ = this.#heroService.getHero(id);
+    this.#heroService.getHero(id).subscribe(hero => this.hero = hero);
+  }
+
+  save(): void {
+    if (this.hero) {
+      this.#heroService.updateHero(this.hero)
+        .subscribe(_ =>
+          this.goBack()
+        );
+    }
   }
 
   goBack(): void {
