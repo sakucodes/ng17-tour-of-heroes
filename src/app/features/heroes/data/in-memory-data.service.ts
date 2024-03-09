@@ -9,6 +9,7 @@ import { Hero } from '../models/hero';
 })
 export class InMemoryDataService implements InMemoryDbService {
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   createDb(): {} | Observable<{}> | Promise<{}> {
     return { heroes: HEROES };
   }

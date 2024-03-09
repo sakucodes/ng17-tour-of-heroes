@@ -46,7 +46,7 @@ export class HeroService {
 
     return this.#httpClient.get<Hero[]>(this.#heroesUrl)
       .pipe(
-        tap(_ => this.log('HeroService: fetched heroes')),
+        tap(() => this.log('HeroService: fetched heroes')),
         catchError(this.handleError<Hero[]>('getHeroes', []))
       );
   }
@@ -56,7 +56,7 @@ export class HeroService {
     const url = `${this.#heroesUrl}/${id}`;
 
     return this.#httpClient.get<Hero>(url).pipe(
-      tap(_ => this.log(`fetched hero id=${id}`)),
+      tap(() => this.log(`fetched hero id=${id}`)),
       catchError(this.handleError<Hero>(`getHero id=${id}`))
     );
   }
@@ -84,10 +84,10 @@ export class HeroService {
   }
 
   /** PUT: update the hero on the server */
-  updateHero(hero: Hero): Observable<any> {
+  updateHero(hero: Hero): Observable<unknown> {
     return this.#httpClient.put(this.#heroesUrl, hero, this.#httpOptions).pipe(
-      tap(_ => this.log(`updated hero id=${hero.id}`)),
-      catchError(this.handleError<any>('updateHero'))
+      tap(() => this.log(`updated hero id=${hero.id}`)),
+      catchError(this.handleError<unknown>('updateHero'))
     );
   }
 
@@ -96,7 +96,7 @@ export class HeroService {
     const url = `${this.#heroesUrl}/${id}`;
 
     return this.#httpClient.delete<Hero>(url, this.#httpOptions).pipe(
-      tap(_ => this.log(`deleted hero id=${id}`)),
+      tap(() => this.log(`deleted hero id=${id}`)),
       catchError(this.handleError<Hero>('deleteHero'))
     );
   }
@@ -109,6 +109,8 @@ export class HeroService {
    * @param result - optional value to return as the observable result
    */
   private handleError<T>(operation = 'operation', result?: T) {
+    
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (error: any): Observable<T> => {
 
       // TODO: send the error to remote logging infrastructure

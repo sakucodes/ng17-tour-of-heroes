@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Hero } from '../../models/hero';
 import { AsyncPipe, Location, NgIf, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './hero-detail.component.html',
   styleUrl: './hero-detail.component.scss'
 })
-export class HeroDetailComponent {
+export class HeroDetailComponent implements OnInit {
 
   hero?: Hero;
 
@@ -34,7 +34,7 @@ export class HeroDetailComponent {
   save(): void {
     if (this.hero) {
       this.#heroService.updateHero(this.hero)
-        .subscribe(_ =>
+        .subscribe(() =>
           this.goBack()
         );
     }
