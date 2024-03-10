@@ -1,4 +1,6 @@
 export type Hero = {
     id: number,
-    name: string
+    name: string,
+    power: string,
+    alterEgo?: string
 }

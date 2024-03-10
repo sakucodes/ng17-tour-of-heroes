@@ -4,11 +4,12 @@ import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { HeroService } from '../../data/hero.service';
 import { firstValueFrom } from 'rxjs';
 import { RouterLink } from '@angular/router';
+import { HeroFormComponent } from '../../ui/hero-form/hero-form.component';
 
 @Component({
   selector: 'toh-heroes',
   standalone: true,
-  imports: [NgFor, NgIf, AsyncPipe, RouterLink],
+  imports: [NgFor, NgIf, AsyncPipe, RouterLink, HeroFormComponent],
   templateUrl: './heroes.component.html',
   styleUrl: './heroes.component.scss'
 })
@@ -27,13 +28,17 @@ export class HeroesComponent implements OnInit {
     this.heroes = await firstValueFrom(this.#heroService.getHeroes());
   }
 
-  add(name: string): void {
-    name = name.trim();
-    if (!name) { return; }
-    this.#heroService.addHero({ name } as Hero)
-      .subscribe(hero =>
-        this.heroes.push(hero)
-      );
+  // add(name: string): void {
+  //   name = name.trim();
+  //   if (!name) { return; }
+  //   this.#heroService.addHero({ name } as Hero)
+  //     .subscribe(hero =>
+  //       this.heroes.push(hero)
+  //     );
+  // }
+
+  heroAdded(hero: Hero): void {
+    this.heroes.push(hero);
   }
 
   delete(hero: Hero): void {

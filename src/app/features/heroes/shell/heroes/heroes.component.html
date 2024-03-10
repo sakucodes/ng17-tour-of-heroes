@@ -1,13 +1,7 @@
-<h2>My Heroes</h2>
-<div>
-    <label for="new-hero">Hero name: </label>
-    <input id="new-hero" #heroName />
+<h2>New Hero</h2>
+<toh-hero-form (added)="heroAdded($event)"></toh-hero-form>
 
-    <!-- (click) passes input value to add() and then clears the input -->
-    <button type="button" class="add-button" (click)="add(heroName.value); heroName.value=''">
-        Add hero
-    </button>
-</div>
+<h2>My Heroes</h2>
 <ul class="heroes">
     <li *ngFor="let hero of heroes">
         <a routerLink="/detail/{{hero.id}}">
