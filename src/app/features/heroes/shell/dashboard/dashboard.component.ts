@@ -1,31 +1,20 @@
 import { AsyncPipe, NgFor } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import { HeroService } from '../../data/hero.service';
-import { Observable, map } from 'rxjs';
-import { Hero } from '../../models/hero';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HeroSearchComponent } from './ui/hero-search/hero-search.component';
+import { HeroesStore } from '../../data/hero.store';
 
 @Component({
   selector: 'toh-dashboard',
   standalone: true,
   imports: [NgFor, AsyncPipe, RouterLink, HeroSearchComponent],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss'
+  styleUrl: './dashboard.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
 
-  heroes?: Observable<Hero[]>;
+  readonly #heroesStore = inject(HeroesStore);
 
-  #heroService: HeroService = inject(HeroService);
-
-  ngOnInit(): void {
-    this.loadHeroes();
-  }
-
-  loadHeroes(): void {
-    this.heroes = this.#heroService.getHeroes().pipe(
-      map((h) => h.slice(1, 5))
-    );
-  }
+  topHeroes = this.#heroesStore.topHeroes;
 }

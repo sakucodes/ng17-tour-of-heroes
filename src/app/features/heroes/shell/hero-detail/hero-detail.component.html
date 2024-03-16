@@ -1,6 +1,6 @@
 <h2>Update Hero</h2>
-<div *ngIf="hero">
-  <toh-hero-form [hero]="hero" (updated)="heroUpdated()"></toh-hero-form>
+<div *ngIf="hero()">
+  <toh-hero-form></toh-hero-form>
 </div>
 
 <button type="button" (click)="goBack()">go back</button>

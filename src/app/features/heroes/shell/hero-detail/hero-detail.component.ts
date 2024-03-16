@@ -1,10 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { Hero } from '../../models/hero';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { AsyncPipe, Location, NgIf, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HeroService } from '../../data/hero.service';
 import { ActivatedRoute } from '@angular/router';
 import { HeroFormComponent } from '../../ui/hero-form/hero-form.component';
+import { HeroesStore } from '../../data/hero.store';
 
 const imports = [
   AsyncPipe,
@@ -19,38 +18,20 @@ const imports = [
   standalone: true,
   imports: imports,
   templateUrl: './hero-detail.component.html',
-  styleUrl: './hero-detail.component.scss'
+  styleUrl: './hero-detail.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeroDetailComponent implements OnInit {
 
-  hero?: Hero;
-
-  #heroService: HeroService = inject(HeroService);
-
+  #heroesStore = inject(HeroesStore);
   #route: ActivatedRoute = inject(ActivatedRoute);
   #location: Location = inject(Location);
 
+  hero = this.#heroesStore.selectedHero;
+
   ngOnInit(): void {
-    this.loadHero();
-  }
-
-  loadHero(): void {
     const id = Number(this.#route.snapshot.paramMap.get('id'));
-
-    this.#heroService.getHero(id).subscribe(hero => this.hero = hero);
-  }
-
-  heroUpdated(): void {
-    this.goBack()
-  }
-
-  save(): void {
-    if (this.hero) {
-      this.#heroService.updateHero(this.hero)
-        .subscribe(() =>
-          this.goBack()
-        );
-    }
+    this.#heroesStore.loadHero(id);
   }
 
   goBack(): void {

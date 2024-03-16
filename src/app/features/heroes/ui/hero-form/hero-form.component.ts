@@ -1,62 +1,57 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, effect, inject } from '@angular/core';
 import { Hero } from '../../models/hero';
-import { FormsModule } from '@angular/forms';
-import { POWERS } from '../../data/mock-heroes';
+import { FormsModule, NgForm } from '@angular/forms';
 import { NgFor } from '@angular/common';
-import { HeroService } from '../../data/hero.service';
+import { HeroesStore } from '../../data/hero.store';
 
 @Component({
   selector: 'toh-hero-form',
   standalone: true,
   imports: [FormsModule, NgFor],
   templateUrl: './hero-form.component.html',
-  styleUrl: './hero-form.component.scss'
+  styleUrl: './hero-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeroFormComponent implements OnChanges {
+export class HeroFormComponent implements OnDestroy {
 
-  @Input() hero?: Hero;
+  #heroesStore = inject(HeroesStore);
 
-  @Output() added: EventEmitter<Hero> = new EventEmitter<Hero>();
-  @Output() updated: EventEmitter<Hero> = new EventEmitter<Hero>();
-
-  model: Hero = {
+  readonly #initialHeroModel: Hero = {
     id: 0,
     name: '',
     power: '',
     alterEgo: ''
   };
 
-  powers = POWERS;
-  submitted = false;
+  model: Hero = this.#initialHeroModel;
 
-  #heroService: HeroService = inject(HeroService);
+  powers = this.#heroesStore.powers();
 
-  ngOnChanges(changes: SimpleChanges): void {
-    const change = changes['hero'];
-    if(change.isFirstChange()) {
-      this.model = change.currentValue as Hero;
-    }
+  constructor() {
+    effect(() => {
+      const hero = this.#heroesStore.selectedHero();
+      if (hero !== null) {
+        this.model = hero;
+      }
+    });
   }
 
-  onSubmit() {
-    this.submitted = true;
+  ngOnDestroy(): void {
+      this.#heroesStore.loadHero(0);
+  }
+
+  onSubmit(form: NgForm) {
     if (this.model.id <= 0) {
-      this.#heroService.addHero({ name: this.model.name, power: this.model.power, alterEgo: this.model.alterEgo } as Hero)
-        .subscribe(hero => {
-          this.added.emit(hero);
-          this.newHero();
-        });
+      const hero = { name: this.model.name.trim(), power: this.model.power, alterEgo: this.model.alterEgo } as Hero;
+      this.#heroesStore.addHero(hero);
+      this.newHero(form);
     } else {
-      this.#heroService.updateHero(this.model)
-        .subscribe(() => {
-          this.updated.emit(this.model);
-          this.newHero();
-        });
+      this.#heroesStore.updateHero(this.model);
     }
   }
 
-  newHero() {
-    this.model = {} as Hero;
-    this.submitted = false;
+  newHero(form: NgForm) {
+    this.model = this.#initialHeroModel;
+    form.reset();
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Hero } from '../models/hero';
-import { Observable, catchError, of, tap } from 'rxjs';
+import { Observable, catchError, lastValueFrom, of, tap } from 'rxjs';
 import { MessageService } from '../../messages/data/message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -52,13 +52,17 @@ export class HeroService {
   }
 
   /** GET hero by id. Will 404 if id not found */
-  getHero(id: number): Observable<Hero> {
+  async getHero(id: number): Promise<Hero | null> {
     const url = `${this.#heroesUrl}/${id}`;
 
-    return this.#httpClient.get<Hero>(url).pipe(
-      tap(() => this.log(`fetched hero id=${id}`)),
-      catchError(this.handleError<Hero>(`getHero id=${id}`))
-    );
+    try {
+      const hero = await lastValueFrom(this.#httpClient.get<Hero>(url));
+      this.log(`fetched hero id=${id}`);
+      return hero;
+    } catch (error) {
+      this.handleError<Hero>(`getHero id=${id}`);
+    }
+    return null;
   }
 
   /* GET heroes whose name contains search term */
@@ -92,13 +96,17 @@ export class HeroService {
   }
 
   /** DELETE: delete the hero from the server */
-  deleteHero(id: number): Observable<Hero> {
+  async deleteHero(id: number): Promise<number | null> {
     const url = `${this.#heroesUrl}/${id}`;
 
-    return this.#httpClient.delete<Hero>(url, this.#httpOptions).pipe(
-      tap(() => this.log(`deleted hero id=${id}`)),
-      catchError(this.handleError<Hero>('deleteHero'))
-    );
+    try {
+      await lastValueFrom(this.#httpClient.delete<Hero>(url, this.#httpOptions));
+      this.log(`deleted hero id=${id}`);
+      return id;
+    } catch (error) {
+      this.handleError<Hero>('deleteHero');
+    }
+    return null;
   }
 
   /**
@@ -109,7 +117,7 @@ export class HeroService {
    * @param result - optional value to return as the observable result
    */
   private handleError<T>(operation = 'operation', result?: T) {
-    
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (error: any): Observable<T> => {
 

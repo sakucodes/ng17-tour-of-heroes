@@ -1,5 +1,5 @@
 <div class="container">
-    <form (ngSubmit)="onSubmit()" #heroForm="ngForm">
+    <form (ngSubmit)="onSubmit(heroForm)" #heroForm="ngForm">
         <div class="form-group">
             <label for="name">Name</label>
             <input type="text" class="form-control" id="name" required [(ngModel)]="model.name" name="name"
@@ -24,8 +24,8 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-success" [disabled]="!heroForm.form.valid || submitted">Submit</button>
-        <button type="button" class="btn btn-default" [disabled]="!heroForm.form.dirty" (click)="newHero(); heroForm.reset()">Reset</button>
+        <button type="submit" class="btn btn-success" [disabled]="!heroForm.form.valid">Submit</button>
+        <button type="button" class="btn btn-default" [disabled]="!heroForm.form.dirty" (click)="newHero(heroForm); heroForm.reset()">Reset</button>
     </form>
 
 
