@@ -8,6 +8,7 @@ import { HeroService } from "./hero.service";
 import { filter, pipe, switchMap, tap } from "rxjs";
 import { withDevtools } from "@angular-architects/ngrx-toolkit";
 import { POWERS } from "./mock-heroes";
+import { withLogger } from "../../../shared/store/logger.feature";
 
 type HeroesState = {
     heroes: Hero[];
@@ -115,5 +116,6 @@ export const HeroesStore = signalStore(
         onInit(store) {
             store.loadHeroes();
         },
-    })
+    }),
+    withLogger('heroes')
 );
